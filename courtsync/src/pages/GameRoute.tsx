@@ -11,7 +11,7 @@ export default function GameRoute() {
   useLanguage();
   const { code = '' } = useParams();
   const norm = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (!isValidCode(norm)) return <Problem title={t("That isn't a game code")} text="Game codes have 6 letters and numbers, like ABC-123." />;
+  if (!isValidCode(norm)) return <Problem title={t("That isn't a game code")} text={t("Game codes have 6 letters and numbers, like ABC-123.")} />;
   return <GameLoader code={norm} />;
 }
 
@@ -83,9 +83,9 @@ function JoinGate({ code, onJoined }: { code: string; onJoined: () => Promise<vo
 
   if (err) return <Problem title={t("Could not check the game")} text={err} action={<button className="btn primary block" onClick={load}>{t("Try again")}</button>} />;
   if (!preview) return <Splash text="Checking game code…" />;
-  if (!preview.found) return <Problem title={t("Game not found")} text={`No game uses the code ${formatCode(code)}. Check it with the organizer.`} />;
+  if (!preview.found) return <Problem title={t("Game not found")} text={tr(`No game uses the code ${formatCode(code)}. Check it with the organizer.`)} />;
   // Member but data not visible yet (e.g. just joined, or a transient read error): reload.
-  if (preview.member) return <Problem title={t("Could not open the game")} text="You are part of this game but it did not load." action={<button className="btn primary block" onClick={() => void onJoined()}>{t("Try again")}</button>} />;
+  if (preview.member) return <Problem title={t("Could not open the game")} text={t("You are part of this game but it did not load.")} action={<button className="btn primary block" onClick={() => void onJoined()}>{t("Try again")}</button>} />;
   const closed = preview.status !== 'live' || !!preview.expired;
   return <JoinForm code={code} preview={preview} closed={closed} onJoined={onJoined} />;
 }
