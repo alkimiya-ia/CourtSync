@@ -36,7 +36,7 @@ export default function Box() {
   return (
     <div className="screen" style={{ paddingTop: 0 }}>
       <div className="topbar">
-        <button className="backbtn" onClick={() => nav(d.myAssignments.length && !final ? '../play' : '/')}><CaretLeft size={20} />{d.myAssignments.length && !final ? t("Record") : 'Home'}</button>
+        <button className="backbtn" onClick={() => nav(d.myAssignments.length && !final ? '../play' : '/')}><CaretLeft size={20} />{d.myAssignments.length && !final ? t("Record") : t('Home')}</button>
         <span className="grow" />
         <LanguageSwitch />
         <SyncBadge g={g} />
@@ -59,7 +59,7 @@ export default function Box() {
               <div key={s} style={{ textAlign: s === 'away' ? 'right' : 'left' }}>
                 <div className="small muted ellipsis">{d.team(s).name}</div>
                 <div className="bigscore" style={{ fontSize: 44 }}>{d.score[s]}</div>
-                <div className="small muted">Player pts {d.playerPoints[s]}{diff !== 0 && <span style={{ color: 'var(--a300)' }}> · {diff > 0 ? `+${diff} unattributed` : `${-diff} over`}</span>}</div>
+                <div className="small muted">{t("Player pts ")}{d.playerPoints[s]}{diff !== 0 && <span style={{ color: 'var(--a300)' }}> · {diff > 0 ? `+${diff} ${t('unattributed')}` : `${-diff} ${t('over')}`}</span>}</div>
               </div>
             );
           })}
@@ -88,7 +88,7 @@ export default function Box() {
           <div key={k} className="card" style={{ padding: '8px 10px' }}><div className="label">{k}</div><div>{m}/{a} <span className="small muted">{pct(m, a)}</span></div></div>
         ))}
       </div>
-      {untracked.length > 0 && <p className="small muted">Not tracked: {untracked.join(', ')}. Their stats are missing, so player points can be lower than the official score.</p>}
+      {untracked.length > 0 && <p className="small muted">{t("Not tracked: ")}{untracked.join(', ')}. Their stats are missing, so player points can be lower than the official score.</p>}
 
       {!final && (
         <div className="row">
