@@ -81,7 +81,7 @@ export default function Live() {
         <button className="iconbtn" title="Sunlight mode" onClick={toggleSun}><Sun /></button>
       </div>
 
-      {!d.live && <div className="error">This game is {data.game.status === 'final' ? t("finished") : t("closed (link expired)")}. Stats are read-only.</div>}
+      {!d.live && <div className="error">{t("This game is ")}{data.game.status === 'final' ? t("finished") : t("closed (link expired)")}. {t("Stats are read-only.")}</div>}
       {disabled && d.live && <div className="error">{t("You joined as a spectator. Switch to tracker to record.")}</div>}
 
       <div className="chips">
@@ -121,7 +121,7 @@ export default function Live() {
         {undoneEv ? (
           <>
             <Trash size={18} className="muted" />
-            <span className="grow ellipsis">Removed {tr(STAT_LABEL[undoneEv.type])} · #{d.playerById.get(undoneEv.player_id)?.jersey}</span>
+            <span className="grow ellipsis">{t("Removed ")}{tr(STAT_LABEL[undoneEv.type])} · #{d.playerById.get(undoneEv.player_id)?.jersey}</span>
             <button className="btn small" onClick={restore}>{t("Restore")}</button>
           </>
         ) : last ? (
@@ -134,7 +134,7 @@ export default function Live() {
             <button className="btn small" onClick={undo}><ArrowCounterClockwise />{t("Undo")}</button>
           </>
         ) : (
-          <span className="muted">Tap a stat to record it for #{player.jersey}</span>
+          <span className="muted">{t("Tap a stat to record it for #")}{player.jersey}</span>
         )}
       </div>
 
