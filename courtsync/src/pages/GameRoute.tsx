@@ -1,3 +1,4 @@
+import { t, tr, useLanguage } from '../lib/i18n';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, Navigate, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { CaretLeft, ShieldCheck } from '@phosphor-icons/react';
@@ -7,17 +8,19 @@ import { friendlyError } from '../lib/supabase';
 import { Splash } from '../components/ui';
 
 export default function GameRoute() {
+  useLanguage();
   const { code = '' } = useParams();
   const norm = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (!isValidCode(norm)) return <Problem title="That isn't a game code" text="Game codes have 6 letters and numbers, like ABC-123." />;
+  if (!isValidCode(norm)) return <Problem title={t("That isn't a game code")} text="Game codes have 6 letters and numbers, like ABC-123." />;
   return <GameLoader code={norm} />;
 }
 
 function GameLoader({ code }: { code: string }) {
+  useLanguage();
   const g = useGame(code);
   if (g.load.kind === 'loading') return <Splash />;
   if (g.load.kind === 'error' && !g.data) {
-    return <Problem title="Could not load the game" text={g.load.message} action={<button className="btn primary block" onClick={() => void g.reload()}>Try again</button>} />;
+    return <Problem title={t("Could not load the game")} text={g.load.message} action={<button className="btn primary block" onClick={() => void g.reload()}>{t("Try again")}</button>} />;
   }
   if (g.load.kind === 'missing' || !g.data || !g.derived?.me) return <JoinGate code={code} onJoined={g.reload} />;
   const ready = g as ReadyGame;
@@ -45,6 +48,7 @@ export function GameIndex() {
 
 /** Organizer sees pending scorekeeper requests on every screen. */
 function ScorekeeperRequestBanner() {
+  useLanguage();
   const g = useGameCtx();
   const [err, setErr] = useState('');
   const req = g.data.game.scorekeeper_request_id;
@@ -55,7 +59,7 @@ function ScorekeeperRequestBanner() {
       className="card col" role="alert">
       <span className="row small"><ShieldCheck size={16} color="var(--accent)" /><b style={{ fontWeight: 500 }}>{g.derived.nameOf(req)}</b>&nbsp;wants to keep the official score{g.data.game.scorekeeper_id ? ` (replacing ${g.derived.nameOf(g.data.game.scorekeeper_id)})` : ''}.</span>
       {err && <span className="small" style={{ color: 'var(--a300)' }}>{err}</span>}
-      <div className="row"><button className="btn small grow" onClick={() => respond(false)}>Decline</button><button className="btn small grow primary" style={{ fontSize: 14, minHeight: 38 }} onClick={() => respond(true)}>Approve</button></div>
+      <div className="row"><button className="btn small grow" onClick={() => respond(false)}>{t("Decline")}</button><button className="btn small grow primary" style={{ fontSize: 14, minHeight: 38 }} onClick={() => respond(true)}>{t("Approve")}</button></div>
     </div>
   );
 }
@@ -66,7 +70,7 @@ function Problem({ title, text, action }: { title: string; text: string; action?
       <div className="topbar"><Link to="/" className="backbtn" style={{ color: 'inherit', textDecoration: 'none' }}><CaretLeft size={20} />Home</Link></div>
       <h2>{title}</h2>
       <p className="muted">{text}</p>
-      <div className="col" style={{ marginTop: 'auto' }}>{action}<Link to="/" className="btn block" style={{ color: 'inherit', textDecoration: 'none' }}>Enter another code</Link></div>
+      <div className="col" style={{ marginTop: 'auto' }}>{action}<Link to="/" className="btn block" style={{ color: 'inherit', textDecoration: 'none' }}>{t("Enter another code")}</Link></div>
     </div>
   );
 }
@@ -77,16 +81,17 @@ function JoinGate({ code, onJoined }: { code: string; onJoined: () => Promise<vo
   const load = () => { setErr(''); setPreview(null); gamePreview(code).then(setPreview).catch((e) => setErr(friendlyError(e))); };
   useEffect(load, [code]);
 
-  if (err) return <Problem title="Could not check the game" text={err} action={<button className="btn primary block" onClick={load}>Try again</button>} />;
+  if (err) return <Problem title={t("Could not check the game")} text={err} action={<button className="btn primary block" onClick={load}>{t("Try again")}</button>} />;
   if (!preview) return <Splash text="Checking game code…" />;
-  if (!preview.found) return <Problem title="Game not found" text={`No game uses the code ${formatCode(code)}. Check it with the organizer.`} />;
+  if (!preview.found) return <Problem title={t("Game not found")} text={`No game uses the code ${formatCode(code)}. Check it with the organizer.`} />;
   // Member but data not visible yet (e.g. just joined, or a transient read error): reload.
-  if (preview.member) return <Problem title="Could not open the game" text="You are part of this game but it did not load." action={<button className="btn primary block" onClick={() => void onJoined()}>Try again</button>} />;
+  if (preview.member) return <Problem title={t("Could not open the game")} text="You are part of this game but it did not load." action={<button className="btn primary block" onClick={() => void onJoined()}>{t("Try again")}</button>} />;
   const closed = preview.status !== 'live' || !!preview.expired;
   return <JoinForm code={code} preview={preview} closed={closed} onJoined={onJoined} />;
 }
 
 function JoinForm({ code, preview, closed, onJoined }: { code: string; preview: GamePreview; closed: boolean; onJoined: () => Promise<void> }) {
+  useLanguage();
   const nav = useNavigate();
   const [name, setName] = useState(getName());
   const [role, setRole] = useState<'tracker' | 'scorekeeper' | 'spectator'>(closed ? 'spectator' : 'tracker');
@@ -105,9 +110,9 @@ function JoinForm({ code, preview, closed, onJoined }: { code: string; preview: 
   };
 
   const options = [
-    ['tracker', 'Track players', 'Record stats for one or more players'],
-    ['scorekeeper', 'Keep the official score', preview.has_scorekeeper ? 'Someone already keeps score; the organizer must approve a change' : 'The organizer approves the scorekeeper'],
-    ['spectator', 'Just watch', 'Live scoreboard and box score'],
+    ['tracker', t("Track players"), t("Record stats for one or more players")],
+    ['scorekeeper', t("Keep the official score"), preview.has_scorekeeper ? 'Someone already keeps score; the organizer must approve a change' : t("The organizer approves the scorekeeper")],
+    ['spectator', t("Just watch"), t("Live scoreboard and box score")],
   ] as const;
 
   return (
@@ -116,11 +121,11 @@ function JoinForm({ code, preview, closed, onJoined }: { code: string; preview: 
       <div className="col" style={{ gap: 6 }}>
         <span className="label" style={{ color: 'var(--a300)' }}>Game {formatCode(code)}</span>
         <h1>{preview.home} vs {preview.away}</h1>
-        <p className="muted">{closed ? (preview.status === 'final' ? 'This game has finished. You can view the results.' : 'This game link has expired. You can view the results.') : 'No account needed. Your name is shown to others in this game.'}</p>
+        <p className="muted">{closed ? (preview.status === 'final' ? t("This game has finished. You can view the results.") : t("This game link has expired. You can view the results.")) : t("No account needed. Your name is shown to others in this game.")}</p>
       </div>
-      <input className="input" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} maxLength={40} autoFocus />
+      <input className="input" placeholder={t("Your name")} value={name} onChange={(e) => setName(e.target.value)} maxLength={40} autoFocus />
       {!closed && (
-        <div className="col"><span className="label">I want to</span>
+        <div className="col"><span className="label">{t("I want to")}</span>
           {options.map(([v, t, s]) => (
             <button key={v} className="pick-row" aria-pressed={role === v} onClick={() => setRole(v)}>
               <span className="grow col" style={{ gap: 0 }}><span>{t}</span><span className="small muted">{s}</span></span>
@@ -130,7 +135,7 @@ function JoinForm({ code, preview, closed, onJoined }: { code: string; preview: 
       )}
       {err && <div className="error">{err}</div>}
       <button className="btn primary block" style={{ marginTop: 'auto' }} disabled={!name.trim() || busy} onClick={join}>
-        {busy ? 'Joining…' : closed ? 'View results' : 'Join game'}
+        {busy ? t("Joining…") : closed ? t("View results") : t("Join game")}
       </button>
     </div>
   );
