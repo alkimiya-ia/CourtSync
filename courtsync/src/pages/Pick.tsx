@@ -78,7 +78,7 @@ export default function Pick() {
               <span className="jersey">{p.jersey}</span>
               <span className="grow col" style={{ gap: 0 }}>
                 <span>{p.name || t("Player #") + p.jersey}</span>
-                <span className="small muted">{o.length ? t("Tracked by ") + o.map((a) => d.nameOf(a.user_id)).join(', ') + (on && !mineIds.has(p.id) ? t(" · you’ll be backup") : '') : 'Nobody tracking'}</span>
+                <span className="small muted">{o.length ? t("Tracked by ") + o.map((a) => d.nameOf(a.user_id)).join(', ') + (on && !mineIds.has(p.id) ? t(" · you’ll be backup") : '') : t('Nobody tracking')}</span>
               </span>
               {on ? <CheckSquare size={24} weight="fill" color="var(--accent)" /> : <Square size={24} color="var(--n600)" />}
             </button>
@@ -95,7 +95,7 @@ export default function Pick() {
       {err && <div className="error">{err}</div>}
       <div style={{ position: 'sticky', bottom: 0, marginTop: 'auto', padding: '12px 0 20px', background: 'var(--bg)' }}>
         <button className="btn primary block" disabled={!sel.size || busy} onClick={start}>
-          {busy ? t("Saving…") : sel.size === 0 ? t("Pick at least one player") : sel.size === 1 ? t("Start tracking") : `Track ${sel.size} players`}
+          {busy ? t("Saving…") : sel.size === 0 ? t("Pick at least one player") : sel.size === 1 ? t("Start tracking") : tr(`Track ${sel.size} players`)}
         </button>
       </div>
     </div>
