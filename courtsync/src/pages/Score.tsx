@@ -54,7 +54,7 @@ export default function Score() {
         <div className="bigscore">{d.score[side]}</div>
         <div className="small muted" style={{ marginTop: 4 }}>
           Player pts {d.playerPoints[side]}
-          {diff[side] !== 0 && <span style={{ color: 'var(--a300)' }}> · {diff[side] > 0 ? `+${diff[side]} unattributed` : `${-diff[side]} over`}</span>}
+          {diff[side] !== 0 && <span style={{ color: 'var(--a300)' }}> · {diff[side] > 0 ? `+${diff[side]} ${t('unattributed')}` : `${-diff[side]} ${t('over')}`}</span>}
         </div>
       </div>
       {canWrite && [3, 2, 1].map((n) => (
@@ -81,7 +81,7 @@ export default function Score() {
 
       <div className="row small" style={{ color: 'var(--n300)' }}>
         {skName ? <ShieldCheck size={16} color="var(--accent)" /> : <Warning size={16} />}
-        {skName ? (d.isScorekeeper ? t("Official · you are the scorekeeper") : `Official · kept by ${skName}`) : t("Unverified · no scorekeeper yet")}
+        {skName ? (d.isScorekeeper ? t("Official · you are the scorekeeper") : `${t("Official · kept by ")}${skName}`) : t("Unverified · no scorekeeper yet")}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>{col('home')}{col('away')}</div>
