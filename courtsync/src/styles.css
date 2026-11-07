@@ -115,6 +115,18 @@ input::placeholder { color: var(--n600); }
 @keyframes flash { from { opacity: 1; } to { opacity: 0; } }
 .shotlabels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; font-size: 11px; letter-spacing: .1em; color: var(--n400); padding: 2px 2px 0; }
 
+/* Touch-device recording layout: use the available viewport width instead of
+   trapping the controls inside the desktop-sized 480px app column.
+   Explicit grid sizing and non-stretching rows keep every button short and wide. */
+@media (pointer: coarse) {
+  .app:has(.screen.tight) { max-width: none; width: 100%; }
+  .screen.tight { width: 100%; }
+  .pad { width: 100%; }
+  .pad .r { width: 100%; grid-auto-rows: max-content; align-items: stretch; }
+  .pad .r > .sbtn { width: 100%; height: var(--btn-h); }
+  .pad .r > .sbtn.made { height: var(--made-h); }
+}
+
 /* Live recording: height tiers (fixed sizes, never proportional) and narrow widths */
 @media (max-height: 700px) {
   .screen.tight { gap: 5px; }
