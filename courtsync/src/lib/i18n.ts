@@ -205,7 +205,21 @@ export const es: Record<string, string> = {
   "Miss": "Fallado",
   "2 PT": "2 P",
   "3 PT": "3 P",
-  "FREE THROW": "TIRO LIBRE"
+  "FREE THROW": "TIRO LIBRE",
+  "Void": "Anular",
+  "Loading…": "Cargando…",
+  "Official · kept by ": "Oficial · anotador: ",
+  "Not tracked: ": "Sin seguimiento: ",
+  "Request sent. The organizer needs to approve it; this screen unlocks as soon as they do.": "Solicitud enviada. El organizador debe aprobarla para habilitar esta pantalla.",
+  "Nobody is keeping the official score. The score shows as unverified until someone does.": "Nadie lleva el marcador oficial. Se mostrará como no verificado hasta que alguien lo haga.",
+  "Someone already keeps score; the organizer must approve a change": "Ya hay un anotador; el organizador debe aprobar el cambio.",
+  "Game ": "Partido ",
+  "wants to keep the official score": "quiere llevar el marcador oficial",
+  " · live": " · en directo",
+  " · edited": " · editado",
+  " · not synced yet": " · aún sin sincronizar",
+  " · you are backup": " · eres suplente",
+  "Official · kept by": "Oficial · anotador:"
 };
 export function t(value: string): string {
   return current === 'es' ? (es[value] ?? value) : value;
