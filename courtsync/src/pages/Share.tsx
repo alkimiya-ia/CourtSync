@@ -1,3 +1,4 @@
+import { t, tr, useLanguage } from '../lib/i18n';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
@@ -6,6 +7,7 @@ import { useGameCtx } from '../lib/useGame';
 import { formatCode } from '../lib/api';
 
 export default function Share() {
+  useLanguage();
   const g = useGameCtx();
   const nav = useNavigate();
   const [copied, setCopied] = useState(false);
@@ -20,28 +22,28 @@ export default function Share() {
     <div className="screen">
       <div className="topbar" />
       <div className="col" style={{ gap: 6 }}>
-        <span className="label" style={{ color: 'var(--a300)' }}>Game created</span>
+        <span className="label" style={{ color: 'var(--a300)' }}>{t("Game created")}</span>
         <h1>{title}</h1>
-        <p className="muted">Other parents scan this with their phone camera, or open the link.</p>
+        <p className="muted">{t("Other parents scan this with their phone camera, or open the link.")}</p>
       </div>
       <div className="card row" style={{ gap: 16, alignItems: 'center' }}>
         <div className="qr"><QRCodeSVG value={url} size={132} bgColor="#f3f5fe" fgColor="#161826" level="M" /></div>
         <div className="col" style={{ gap: 2 }}>
-          <span className="label">Game code</span>
+          <span className="label">{t("Game code")}</span>
           <span style={{ fontSize: 28, fontWeight: 500, letterSpacing: '.08em' }}>{formatCode(game.code)}</span>
           <span className="small muted" style={{ wordBreak: 'break-all' }}>{url.replace(/^https?:\/\//, '')}</span>
         </div>
       </div>
       <div className="row">
-        <button className="btn grow" onClick={copy}>{copied ? <Check /> : <LinkIcon />}{copied ? 'Copied' : 'Copy link'}</button>
-        <button className="btn grow" onClick={share}><ShareNetwork />Share</button>
+        <button className="btn grow" onClick={copy}>{copied ? <Check /> : <LinkIcon />}{copied ? t("Copied") : t("Copy link")}</button>
+        <button className="btn grow" onClick={share}><ShareNetwork />{t("Share")}</button>
       </div>
-      <p className="small muted">Anyone with the code can join and record stats. As organizer you can finish the game and assign the scorekeeper from the box score screen.</p>
+      <p className="small muted">{t("Anyone with the code can join and record stats. As organizer you can finish the game and assign the scorekeeper from the box score screen.")}</p>
       <div className="col" style={{ marginTop: 'auto' }}>
-        <button className="btn primary block" onClick={() => nav('../pick')}>Track players</button>
+        <button className="btn primary block" onClick={() => nav('../pick')}>{t("Track players")}</button>
         <div className="row">
-          <button className="btn grow" onClick={() => nav('../score')}>Scorekeeper</button>
-          <button className="btn grow" onClick={() => nav('../box')}>Box score</button>
+          <button className="btn grow" onClick={() => nav('../score')}>{t("Scorekeeper")}</button>
+          <button className="btn grow" onClick={() => nav('../box')}>{t("Box score")}</button>
         </div>
       </div>
     </div>
