@@ -101,9 +101,9 @@ input::placeholder { color: var(--n600); }
 .lastbar { flex: none; height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 4px 0 12px; border-radius: var(--r); border: 1.5px solid var(--divider); }
 .lastbar.fresh { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
 
-/* Buttons get fixed, practical heights (tiered by screen height below) instead of sharing the viewport.
-   margin-top:auto keeps the pad at the bottom (thumb zone) when there is spare height. */
-.pad { --btn-h: 52px; --made-h: 64px; flex: none; margin-top: auto; display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
+/* Recording actions follow the feedback bar directly; do not push them to the viewport bottom.
+   Fixed button heights keep the controls usable at different screen sizes. */
+.pad { --btn-h: 52px; --made-h: 64px; flex: none; margin-top: 0; display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
 .pad .r { display: grid; gap: 6px; }
 .sbtn { position: relative; overflow: hidden; height: var(--btn-h, 52px); min-height: 44px; min-width: 0; padding: 0 4px; line-height: 1.15; text-align: center; border-radius: var(--r); border: 1px solid var(--n800); background: var(--surface); font-size: 15px; font-weight: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
 .sbtn:active { background: var(--n800); }
