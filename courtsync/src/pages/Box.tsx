@@ -1,3 +1,5 @@
+import LanguageSwitch from '../components/LanguageSwitch';
+import { t, tr, useLanguage } from '../lib/i18n';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CaretLeft, PlusMinus, ShareNetwork, ShieldCheck, Warning } from '@phosphor-icons/react';
@@ -9,6 +11,7 @@ import { Sheet, SyncBadge } from '../components/ui';
 import type { Player, Side } from '../lib/types';
 
 export default function Box() {
+  useLanguage();
   const g = useGameCtx();
   const nav = useNavigate();
   const { data, derived: d } = g;
@@ -33,10 +36,11 @@ export default function Box() {
   return (
     <div className="screen" style={{ paddingTop: 0 }}>
       <div className="topbar">
-        <button className="backbtn" onClick={() => nav(d.myAssignments.length && !final ? '../play' : '/')}><CaretLeft size={20} />{d.myAssignments.length && !final ? 'Record' : 'Home'}</button>
+        <button className="backbtn" onClick={() => nav(d.myAssignments.length && !final ? '../play' : '/')}><CaretLeft size={20} />{d.myAssignments.length && !final ? t("Record") : 'Home'}</button>
         <span className="grow" />
+        <LanguageSwitch />
         <SyncBadge g={g} />
-        {d.isScorekeeper && !final && <button className="iconbtn" title="Scorekeeper" style={{ color: 'var(--a300)' }} onClick={() => nav('../score')}><PlusMinus /></button>}
+        {d.isScorekeeper && !final && <button className="iconbtn" title={t("Scorekeeper")} style={{ color: 'var(--a300)' }} onClick={() => nav('../score')}><PlusMinus /></button>}
         <button className="iconbtn" title="Share game" onClick={() => nav('../share')}><ShareNetwork /></button>
       </div>
 
@@ -44,9 +48,9 @@ export default function Box() {
         <div className="row small" style={{ justifyContent: 'space-between' }}>
           <span className="row" style={{ gap: 6, color: 'var(--n300)' }}>
             {skName ? <ShieldCheck size={16} color="var(--accent)" /> : <Warning size={16} />}
-            {skName ? `Official · ${skName}` : 'Unverified score'}
+            {skName ? `Official · ${skName}` : t("Unverified score")}
           </span>
-          {final ? <span className="tag accent">{game.status === 'final' ? 'FINAL' : 'EXPIRED'}</span> : <span className="muted">{periodLabel(game.current_period, game.periods)} · live</span>}
+          {final ? <span className="tag accent">{game.status === 'final' ? t("FINAL") : t("EXPIRED")}</span> : <span className="muted">{periodLabel(game.current_period, game.periods)} · live</span>}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }} className="num">
           {(['home', 'away'] as Side[]).map((s) => {
@@ -67,17 +71,17 @@ export default function Box() {
       </div>
 
       <table className="box">
-        <thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th></tr></thead>
+        <thead><tr><th>{t("Player")}</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th></tr></thead>
         <tbody>
           {rows.map(({ p, l, by }) => (
             <tr key={p.id} onClick={() => setDetail(p)} style={{ opacity: by.length ? 1 : 0.6 }}>
               <td><div className="ellipsis" style={{ maxWidth: 150 }}><span className="muted" style={{ display: 'inline-block', width: 24 }}>{p.jersey}</span>{p.name || '—'}</div>
-                <div className="small muted" style={{ paddingLeft: 24 }}>{l.fgm}/{l.fga} FG · {by.length ? by.map((a) => d.nameOf(a.user_id)).join(', ') : 'not tracked'}</div></td>
+                <div className="small muted" style={{ paddingLeft: 24 }}>{l.fgm}/{l.fga} FG · {by.length ? by.map((a) => d.nameOf(a.user_id)).join(', ') : t("not tracked")}</div></td>
               <Cells l={l} />
             </tr>
           ))}
         </tbody>
-        <tfoot><tr><td>Team (tracked)</td><Cells l={tot} /></tr></tfoot>
+        <tfoot><tr><td>{t("Team (tracked)")}</td><Cells l={tot} /></tr></tfoot>
       </table>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6 }} className="num">
         {([['FG', tot.fgm, tot.fga], ['3P', tot.fg3m, tot.fg3a], ['FT', tot.ftm, tot.fta]] as const).map(([k, m, a]) => (
@@ -88,13 +92,13 @@ export default function Box() {
 
       {!final && (
         <div className="row">
-          {d.me?.role !== 'spectator' && <button className="btn grow" onClick={() => nav('../pick')}>Track players</button>}
-          {!d.isScorekeeper && !d.hasRequestedScorekeeper && (!game.scorekeeper_id || d.isOrganizer) && <button className="btn grow" onClick={() => run(() => requestScorekeeper(game.id))}>{d.isOrganizer ? 'Keep score' : 'Ask to keep score'}</button>}
-          {d.hasRequestedScorekeeper && <span className="small muted grow">Scorekeeper request sent to the organizer.</span>}
+          {d.me?.role !== 'spectator' && <button className="btn grow" onClick={() => nav('../pick')}>{t("Track players")}</button>}
+          {!d.isScorekeeper && !d.hasRequestedScorekeeper && (!game.scorekeeper_id || d.isOrganizer) && <button className="btn grow" onClick={() => run(() => requestScorekeeper(game.id))}>{d.isOrganizer ? t("Keep score") : t("Ask to keep score")}</button>}
+          {d.hasRequestedScorekeeper && <span className="small muted grow">{t("Scorekeeper request sent to the organizer.")}</span>}
         </div>
       )}
 
-      <div className="label" style={{ marginTop: 8 }}>Game history</div>
+      <div className="label" style={{ marginTop: 8 }}>{t("Game history")}</div>
       <div className="col" style={{ gap: 0 }}>
         {recent.map((e) => {
           const p = d.playerById.get(e.player_id);
@@ -102,16 +106,16 @@ export default function Box() {
             <div key={e.id} className={'list-row rule' + (e.voided ? ' strike' : '')}>
               <span className="small muted num" style={{ width: 70 }}>{periodLabel(e.period, game.periods)} {timeOf(e.client_ts)}</span>
               <span className="grow col" style={{ gap: 0, minWidth: 0 }}>
-                <span className="ellipsis">#{p?.jersey} {p?.name} · {STAT_LABEL[e.type]}{e.edited ? ' (edited)' : ''}</span>
+                <span className="ellipsis">#{p?.jersey} {p?.name} · {tr(STAT_LABEL[e.type])}{e.edited ? ' (edited)' : ''}</span>
                 <span className="small muted">{d.team(d.sideOfPlayer(e.player_id)).name} · {d.nameOf(e.user_id)}</span>
               </span>
             </div>
           );
         })}
-        {!recent.length && <p className="small muted">No stats recorded yet.</p>}
+        {!recent.length && <p className="small muted">{t("No stats recorded yet.")}</p>}
       </div>
 
-      <div className="label" style={{ marginTop: 8 }}>People in this game</div>
+      <div className="label" style={{ marginTop: 8 }}>{t("People in this game")}</div>
       <div className="col" style={{ gap: 0 }}>
         {data.participants.map((p) => {
           const isSk = game.scorekeeper_id === p.user_id;
@@ -119,12 +123,12 @@ export default function Box() {
           return (
             <div key={p.user_id} className="list-row rule">
               <span className="grow col" style={{ gap: 0 }}>
-                <span>{d.nameOf(p.user_id)}{p.user_id === game.organizer_id ? ' · organizer' : ''}{isSk ? ' · scorekeeper' : ''}{game.scorekeeper_request_id === p.user_id ? ' · asked to keep score' : ''}</span>
-                <span className="small muted">{tracks.length ? 'Tracking ' + tracks.join(', ') : p.role === 'spectator' ? 'Watching' : 'Not tracking'}</span>
+                <span>{d.nameOf(p.user_id)}{p.user_id === game.organizer_id ? t(" · organizer") : ''}{isSk ? ' · scorekeeper' : ''}{game.scorekeeper_request_id === p.user_id ? ' · asked to keep score' : ''}</span>
+                <span className="small muted">{tracks.length ? 'Tracking ' + tracks.join(', ') : p.role === 'spectator' ? t("Watching") : t("Not tracking")}</span>
               </span>
               {d.isOrganizer && !final && (isSk
-                ? <button className="btn small" onClick={() => run(() => setScorekeeper(game.id, null))}>Remove scorekeeper</button>
-                : <button className="btn small" onClick={() => run(() => setScorekeeper(game.id, p.user_id))}>Make scorekeeper</button>)}
+                ? <button className="btn small" onClick={() => run(() => setScorekeeper(game.id, null))}>{t("Remove scorekeeper")}</button>
+                : <button className="btn small" onClick={() => run(() => setScorekeeper(game.id, p.user_id))}>{t("Make scorekeeper")}</button>)}
             </div>
           );
         })}
@@ -132,8 +136,8 @@ export default function Box() {
 
       {err && <div className="error">{err}</div>}
       {d.isOrganizer && (final
-        ? <button className="btn block" onClick={() => run(() => reopenGame(game.id))}>{game.status === 'final' ? 'Reopen game' : 'Extend game by a day'}</button>
-        : <button className="btn block" onClick={() => { if (confirm('Finish the game? Stats and score become read-only.')) void run(() => finishGame(game.id)); }}>Finish game</button>)}
+        ? <button className="btn block" onClick={() => run(() => reopenGame(game.id))}>{game.status === 'final' ? t("Reopen game") : t("Extend game by a day")}</button>
+        : <button className="btn block" onClick={() => { if (confirm(t("Finish the game? Stats and score become read-only."))) void run(() => finishGame(game.id)); }}>{t("Finish game")}</button>)}
 
       {detail && <PlayerSheet p={detail} onClose={() => setDetail(null)} />}
     </div>
@@ -147,7 +151,7 @@ function PlayerSheet({ p, onClose }: { p: Player; onClose: () => void }) {
   const l = lineOf(evs.filter((e) => !e.voided));
   return (
     <Sheet onClose={onClose}>
-      <div className="row" style={{ justifyContent: 'space-between' }}><h3>#{p.jersey} {p.name}</h3><button className="btn small" onClick={onClose}>Close</button></div>
+      <div className="row" style={{ justifyContent: 'space-between' }}><h3>#{p.jersey} {p.name}</h3><button className="btn small" onClick={onClose}>{t("Close")}</button></div>
       <div className="card num" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8 }}>
         {([['PTS', l.pts], ['REB', `${l.reb}`], ['OREB', l.c.REB_OFF], ['DREB', l.c.REB_DEF], ['AST', l.c.AST], ['STL', l.c.STL], ['BLK', l.c.BLK], ['TO', l.c.TOV], ['PF', l.c.PF],
           ['FG', `${l.fgm}/${l.fga} ${pct(l.fgm, l.fga)}`], ['2P', `${l.fg2m}/${l.fg2a} ${pct(l.fg2m, l.fg2a)}`], ['3P', `${l.fg3m}/${l.fg3a} ${pct(l.fg3m, l.fg3a)}`], ['FT', `${l.ftm}/${l.fta} ${pct(l.ftm, l.fta)}`]] as const).map(([k, v]) => (
@@ -158,11 +162,11 @@ function PlayerSheet({ p, onClose }: { p: Player; onClose: () => void }) {
         {[...evs].reverse().map((e) => (
           <div key={e.id} className={'list-row rule' + (e.voided ? ' strike' : '')}>
             <span className="small muted num" style={{ width: 70 }}>{periodLabel(e.period, data.game.periods)} {timeOf(e.client_ts)}</span>
-            <span className="grow">{STAT_LABEL[e.type]}</span>
+            <span className="grow">{tr(STAT_LABEL[e.type])}</span>
             <span className="small muted">{d.nameOf(e.user_id)}</span>
           </div>
         ))}
-        {!evs.length && <p className="small muted">No events for this player.</p>}
+        {!evs.length && <p className="small muted">{t("No events for this player.")}</p>}
       </div>
     </Sheet>
   );
