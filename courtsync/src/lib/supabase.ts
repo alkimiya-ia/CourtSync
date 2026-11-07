@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import { createClient } from '@supabase/supabase-js';
 
 const url = import.meta.env.VITE_SUPABASE_URL;
@@ -47,10 +48,10 @@ export function friendlyError(e: unknown): string {
     ['INVALID_INPUT', 'Some of the details are not valid. Check names, periods and jersey numbers.'],
     ['NOT_AUTHENTICATED', 'Could not sign you in. Reload the page and try again.'],
   ];
-  for (const [k, v] of map) if (msg.includes(k)) return v;
-  if (code === '42501' || msg.includes('row-level security')) return 'Not allowed: you may not be tracking this player, or the game is closed.';
-  if (code === '23505') return 'That already exists (for example, a duplicate jersey number).';
-  if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('Load failed')) return 'No connection. Try again when you are online.';
-  if (msg.toLowerCase().includes('anonymous sign-ins are disabled')) return 'Anonymous sign-in is disabled in Supabase (Auth → Providers → Anonymous).';
+  for (const [k, v] of map) if (msg.includes(k)) return t(v);
+  if (code === '42501' || msg.includes('row-level security')) return t("Not allowed: you may not be tracking this player, or the game is closed.");
+  if (code === '23505') return t("That already exists (for example, a duplicate jersey number).");
+  if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('Load failed')) return t("No connection. Try again when you are online.");
+  if (msg.toLowerCase().includes('anonymous sign-ins are disabled')) return t("Anonymous sign-in is disabled in Supabase (Auth → Providers → Anonymous).");
   return msg;
 }
